@@ -45,7 +45,7 @@ def train_model(model, train_set, batch_size, epochs, lr, lamda):
             model.backward(r, r_pred, u, i, lr, lamda)
 
         # 打印当前轮次的RMSE
-        print(f"Epoch {epoch+1}: RMSE={evaluate.RMSE(r, r_pred)} On Train Set")
+        print(f"Epoch {epoch+1}, RMSE: {evaluate.RMSE(r, r_pred)}")
     return model
 
 def evaluate_model(model, test_set):
