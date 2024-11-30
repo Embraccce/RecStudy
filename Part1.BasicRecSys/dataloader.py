@@ -107,3 +107,10 @@ class DataIter:
         ratings = np.array([x[2] for x in batch], dtype=np.float32)
 
         return user_ids, item_ids, ratings
+
+if __name__ == "__main__":
+    import os
+
+    # 获取当前文件的路径
+    current_file_path = os.path.abspath(__file__)
+    print("当前文件的路径是:", current_file_path)
