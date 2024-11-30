@@ -4,14 +4,34 @@ import torch.nn as nn
 import dataloader4ml100kOneHot
 from torch.utils.data import DataLoader, TensorDataset
 
+class FM(nn.Module):
+    def __init__(self, n_features,n_factors):
+        """
+        初始化 FM 类，定义模型的参数。
+        
+        参数:
+        - n_features (int): 输入特征的数量。
+        - n_factors (int): 隐因子的维度。
+        """
+        self.w0 = nn.init.xavier_uniform_(nn.Parameter(torch.empty(1, 1)))
+        self.w1 = nn.init.xavier_uniform_(nn.Parameter(torch.empty(n_features, 1)))
+        self.w2 = nn.init.xavier_uniform_(nn.Parameter(torch.empty(n_features, n_features)))
 
-class LR(nn.Module):
-    def __init__(self, n_features):
-        super(LR, self).__init__()
-        self.b = nn.init.xavier_normal_(nn.Parameter(torch.empty(1,1)))
-        self.w = nn.init.xavier_normal_(nn.Parameter(torch.empty(n_features,1)))
-    def forward(self, x):        
-        logits = torch.sigmoid(torch.matmul(x,self.w)+self.b)
+    def FMcross(self, x):
+        square_of_sum = torch.matmul(x,self.w2) ** 2
+        sum_of_square = torch.matmul(x ** 2, self.w2 ** 2)
+
+        output = square_of_sum - sum_of_square
+        output = torch.sum(output,dim=1,keepdim=True)
+        output = 0.5 * output
+
+        return output
+    
+
+    def forward(self, x):
+        lr_out = self.w0 + torch.matmul(x, self.w1)
+        cross_out = self.FMcross(x)
+        logits = torch.sigmoid(lr_out + cross_out)
         return logits
     
 
@@ -33,13 +53,13 @@ def load_data(rate_thr=3):
     return x_train, x_test, y_train, y_test
 
 
-def initialize_model(n_features):
+def initialize_model(n_features,n_factors):
     """初始化 LR 模型"""
-    return LR(n_features)
+    return FM(n_features,n_factors)
 
 
 def train_model(model, train_set, batch_size=1024, epochs=20, lr=0.01, wd=5e-3):
-    """训练 LR 模型"""
+    """训练 FM 模型"""
     # 定义优化器和损失函数
     optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=wd)
     criterion = nn.BCELoss()
@@ -75,9 +95,10 @@ def train_model(model, train_set, batch_size=1024, epochs=20, lr=0.01, wd=5e-3):
 
     return model
 
+
 def evaluate_model(model, test_set,threshold=0.5):
     """
-    评估 LR 模型的性能，计算 precision, recall 和 accuracy。
+    评估 FM 模型的性能，计算 precision, recall 和 accuracy。
 
     参数:
     - model: 训练好的 LR 模型
@@ -133,7 +154,3 @@ if __name__ == "__main__":
     # 步骤 4: 评估模型性能
     res = evaluate_model(model, (x_test, y_test))
     print(f"Evaluation Results - precision: {res['precision']}, recall: {res['recall']}, accuracy: {res['accuracy']}")
-    
-
-
-
