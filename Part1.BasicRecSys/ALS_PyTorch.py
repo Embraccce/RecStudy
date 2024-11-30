@@ -59,10 +59,10 @@ def train_model(model, train_set, batch_size, epochs, lr):
     # 定义优化器和损失函数
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     criterion = nn.BCELoss()
-    
+
     # 开始训练过程
     for epoch in range(epochs):
-        all_loss = 0.0  # 记录每个 epoch 的总损失
+        epoch_loss = 0.0  # 记录每个 epoch 的总损失
         
         # 使用 DataLoader 加载训练数据
         for u, i, r in DataLoader(train_set, batch_size=batch_size, shuffle=True):
@@ -74,14 +74,14 @@ def train_model(model, train_set, batch_size, epochs, lr):
             
             # 计算损失
             loss = criterion(r_pred, r.float())
-            all_loss += loss.item()  # 累加损失值
+            epoch_loss += loss.item()  # 累加损失值
             
             # 反向传播并更新参数
             loss.backward()
             optimizer.step()
         
         # 输出当前 epoch 的平均损失
-        print(f"Epoch {epoch + 1}/{epochs}, Loss: {all_loss / len(train_set)}")
+        print(f"Epoch [{epoch + 1}/{epochs}], Loss: {epoch_loss / (len(train_set)//batch_size)}")
 
     return model
 
