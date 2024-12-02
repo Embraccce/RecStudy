@@ -13,17 +13,18 @@ class FM(nn.Module):
         - n_features (int): 输入特征的数量。
         - n_factors (int): 隐因子的维度。
         """
+        super(FM, self).__init__()
         self.w0 = nn.init.xavier_uniform_(nn.Parameter(torch.empty(1, 1)))
         self.w1 = nn.init.xavier_uniform_(nn.Parameter(torch.empty(n_features, 1)))
-        self.w2 = nn.init.xavier_uniform_(nn.Parameter(torch.empty(n_features, n_features)))
+        self.w2 = nn.init.xavier_uniform_(nn.Parameter(torch.empty(n_features, n_factors)))
 
     def FMcross(self, x):
-        square_of_sum = torch.matmul(x,self.w2) ** 2
-        sum_of_square = torch.matmul(x ** 2, self.w2 ** 2)
+        square_of_sum = torch.matmul(x,self.w2) ** 2 # [batch_size, n_factors]
+        sum_of_square = torch.matmul(x ** 2, self.w2 ** 2) # [batch_size, n_factors]
 
-        output = square_of_sum - sum_of_square
-        output = torch.sum(output,dim=1,keepdim=True)
-        output = 0.5 * output
+        output = square_of_sum - sum_of_square # [batch_size, n_factors]
+        output = torch.sum(output,dim=1,keepdim=True) # [batch_size, 1]
+        output = 0.5 * output # [batch_size, 1]
 
         return output
     
@@ -139,14 +140,15 @@ if __name__ == "__main__":
     batch_size = 1024
     epochs = 20
     lr = 0.01
-    wd=5e-3
-    rate_thr=3
+    wd = 5e-3 # 权重衰减率
+    rate_thr = 3 # 评分阈值
+    n_factors = 10 # 隐因子的维度
 
     # 步骤 1: 加载数据
     x_train, x_test, y_train, y_test = load_data(rate_thr)
 
     # 步骤 2: 初始化模型
-    model = initialize_model(n_features = x_train.shape[1])
+    model = initialize_model(n_features = x_train.shape[1], n_factors = n_factors)
 
     # 步骤 3: 训练模型
     model = train_model(model, (x_train,y_train), batch_size, epochs, lr, wd)
