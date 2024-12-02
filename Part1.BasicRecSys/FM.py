@@ -23,7 +23,7 @@ class FM(nn.Module):
         sum_of_square = torch.matmul(x ** 2, self.w2 ** 2) # [batch_size, n_factors]
 
         output = square_of_sum - sum_of_square # [batch_size, n_factors]
-        output = torch.sum(output,dim=1,keepdim=True) # [batch_size, 1]
+        output = torch.sum(output, dim=1, keepdim=True) # [batch_size, 1]
         output = 0.5 * output # [batch_size, 1]
 
         return output
@@ -55,7 +55,7 @@ def load_data(rate_thr=3):
 
 
 def initialize_model(n_features,n_factors):
-    """初始化 LR 模型"""
+    """初始化 FM 模型"""
     return FM(n_features,n_factors)
 
 
@@ -142,7 +142,7 @@ if __name__ == "__main__":
     lr = 0.01
     wd = 5e-3 # 权重衰减率
     rate_thr = 3 # 评分阈值
-    n_factors = 10 # 隐因子的维度
+    n_factors = 128 # 隐因子的维度
 
     # 步骤 1: 加载数据
     x_train, x_test, y_train, y_test = load_data(rate_thr)

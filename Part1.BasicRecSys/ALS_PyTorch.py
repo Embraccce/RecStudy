@@ -6,12 +6,12 @@ from torch.utils.data import DataLoader
 from sklearn.metrics import precision_score, recall_score, accuracy_score
 
 class ALS(nn.Module):
-    def __init__(self, n_users, n_items, n_factors):
+    def __init__(self, n_user_features, n_item_features, n_factors):
         super(ALS, self).__init__()
         
         # 随机初始化用户和物品的嵌入向量，并将它们的L2范数约束在1以内
-        self.users = nn.Embedding(n_users, n_factors, max_norm=1)
-        self.items = nn.Embedding(n_items, n_factors, max_norm=1)
+        self.users = nn.Embedding(n_user_features, n_factors, max_norm=1)
+        self.items = nn.Embedding(n_item_features, n_factors, max_norm=1)
         
         # 使用Sigmoid激活函数，将点积相似度映射到 [0, 1] 的范围
         self.sigmoid = nn.Sigmoid()
@@ -50,7 +50,7 @@ def load_data(file_path,test_ratio):
 
 def initialize_model(user_count, item_count, factors_dim):
     """初始化 ALS 模型"""
-    return ALS(n_users=user_count, n_items=item_count, n_factors=factors_dim)
+    return ALS(n_user_features=user_count, n_item_features=item_count, n_factors=factors_dim)
 
 
 

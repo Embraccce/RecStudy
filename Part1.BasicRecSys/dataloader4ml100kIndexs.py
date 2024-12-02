@@ -1,4 +1,3 @@
-import sys
 import numpy as np
 import pandas as pd
 
@@ -43,9 +42,6 @@ def load_ml100k_user_item_indices(user_path, item_path):
 
     # 将所有特征的索引数组组合成一个二维数组
     user_indices = np.vstack(user_indices).T
-
-    print(user_indices)
-    sys.exit()
 
     # 加载物品数据，定义列名，包括电影的特征 'feature_1' 到 'feature_19'
     item_columns = ['item_id', 'title', 'release_date', 'video_release_date', 
