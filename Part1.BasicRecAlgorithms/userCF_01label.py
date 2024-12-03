@@ -1,6 +1,6 @@
 import collections
 import basicSim
-import dataloader
+import utils.dataloader as dataloader
 import evaluate
 from tqdm import tqdm
 import numpy as np

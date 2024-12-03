@@ -1,10 +1,13 @@
 """
 直接将隐向量当作特征的embedding，通过端到端的训练方式来训练FM（Factorization Machine）模型。
 """
+import os
+import sys
+sys.path.append(os.getcwd())
 import torch
 import torch.nn as nn
 import numpy as np
-import dataloader4ml100kIndexs
+import utils.dataloader4ml100kIndexs as dataloader4ml100kIndexs
 from sklearn.metrics import precision_score, recall_score, accuracy_score
 from torch.utils.data import DataLoader, TensorDataset
 

@@ -1,7 +1,10 @@
+import os
+import sys
+sys.path.append(os.getcwd())
 from sklearn.metrics import precision_score, recall_score, accuracy_score
 import torch
 import torch.nn as nn
-import dataloader4ml100kOneHot
+import utils.dataloader4ml100kOneHot as dataloader4ml100kOneHot
 from torch.utils.data import DataLoader, TensorDataset
 
 class FM(nn.Module):

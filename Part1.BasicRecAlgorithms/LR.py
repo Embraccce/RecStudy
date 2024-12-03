@@ -1,3 +1,6 @@
+import os
+import sys
+sys.path.append(os.getcwd())
 from sklearn.metrics import precision_score, recall_score, accuracy_score
 import torch
 import torch.nn as nn

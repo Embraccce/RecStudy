@@ -1,6 +1,9 @@
+import os
+import sys
+sys.path.append(os.getcwd())
 import numpy as np
 import dataloader
-from dataloader import DataIter
+from utils.dataloader import DataIter
 import evaluate
 
 class ALS():

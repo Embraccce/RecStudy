@@ -4,45 +4,47 @@ sys.path.append(os.getcwd())
 import numpy as np
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 import utils.dataloader as dataloader
 from torch.utils.data import DataLoader
 from sklearn.metrics import precision_score, recall_score, accuracy_score
 
-class ALS(nn.Module):
-    def __init__(self, n_users, n_items, n_factors):
-        super(ALS, self).__init__()
-        
-        # 随机初始化用户和物品的嵌入向量，并将它们的L2范数约束在1以内
-        self.users = nn.Embedding(n_users, n_factors, max_norm=1)
-        self.items = nn.Embedding(n_items, n_factors, max_norm=1)
-        
-        # 使用Sigmoid激活函数，将点积相似度映射到 [0, 1] 的范围
+
+class ALS_MLP(nn.Module):
+    def __init__(self, n_users, n_items, dim):
+        super(ALS_MLP,self).__init__()
+        self.users = nn.Embedding(n_users, dim, max_norm=1)
+        self.items = nn.Embedding(n_items, dim, max_norm=1)
+
+        self.u_hidden_layer1 = self.dense_layer(dim, dim // 2)
+        self.u_hidden_layer2 = self.dense_layer(dim // 2, dim // 4)
+
+        self.i_hidden_layer1 = self.dense_layer(dim,dim // 2)
+        self.i_hidden_layer2 = self.dense_layer(dim // 2, dim//4)
+
         self.sigmoid = nn.Sigmoid()
 
-    def forward(self, user_ids, item_ids):
-        """
-        前向传播方法，用于计算用户和物品之间的相似度。
+    def dense_layer(self, in_features, out_features):
+        return nn.Sequential(
+            nn.Linear(in_features,out_features),
+            nn.Tanh()
+        )
+
+    def forward(self, u, i):
+        u = self.users(u)
+        u = self.u_hidden_layer1(u)
+        u = self.u_hidden_layer2(u)
         
-        参数:
-        - user_ids: 用户索引，形状为 [batch_size]
-        - item_ids: 物品索引，形状为 [batch_size]
-        
-        返回:
-        - similarity_scores: 用户和物品之间的相似度分数，范围在 [0, 1]，形状为 [batch_size]
-        """
-        
-        # 从嵌入层提取用户和物品的嵌入向量
-        # user_embeddings 和 item_embeddings 的形状均为 [batch_size, n_factors]
-        user_embeddings = self.users(user_ids)
-        item_embeddings = self.items(item_ids)
-        
-        # 计算用户和物品嵌入的点积相似度，形状为 [batch_size]
-        dot_product_similarity = torch.sum(user_embeddings * item_embeddings, dim=1)
-        
-        # 使用Sigmoid将点积相似度映射到 [0, 1] 范围，得到相似度得分
-        similarity_scores = self.sigmoid(dot_product_similarity)
-        
-        return similarity_scores
+        i = self.items(i)
+        i = self.i_hidden_layer1(i)
+        i = self.i_hidden_layer2(i)
+
+        u = F.dropout(u, training=self.training)
+        i = F.dropout(i, training=self.training)
+
+        ui = torch.sum(u * i, dim=1)
+        logit = self.sigmoid(ui * 3)
+        return logit
     
 
 def load_data(file_path,test_ratio):
@@ -52,13 +54,12 @@ def load_data(file_path,test_ratio):
 
 
 def initialize_model(user_count, item_count, factors_dim):
-    """初始化 ALS 模型"""
-    return ALS(n_users=user_count, n_items=item_count, n_factors=factors_dim)
-
+    """初始化 ALS_MLP 模型"""
+    return ALS_MLP(n_users=user_count, n_items=item_count, dim=factors_dim)
 
 
 def train_model(model, train_set, batch_size, epochs, lr):
-    """训练 ALS 模型"""
+    """训练 ALS_MLP 模型"""
     # 定义优化器和损失函数
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     criterion = nn.BCELoss()
@@ -91,7 +92,7 @@ def train_model(model, train_set, batch_size, epochs, lr):
 
 def evaluate_model(model, test_set, threshold=0.5):
     """
-    评估 ALS 模型的性能，计算 precision, recall 和 accuracy。
+    评估 ALS_MLP 模型的性能，计算 precision, recall 和 accuracy。
 
     参数:
     - model: 训练好的 ALS 模型
@@ -129,7 +130,6 @@ def evaluate_model(model, test_set, threshold=0.5):
     return metrics
 
 
-
 if __name__ == "__main__":
     # 配置参数
     file_path = "./dataset/ml-100k/rating_index.tsv"
@@ -151,5 +151,4 @@ if __name__ == "__main__":
     # 步骤 4: 评估模型性能
     res = evaluate_model(model, test_set)
     print(f"Evaluation Results - precision: {res['precision']}, recall: {res['recall']}, accuracy: {res['accuracy']}")
-
 
