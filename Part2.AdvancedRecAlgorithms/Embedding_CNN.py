@@ -9,9 +9,9 @@ from sklearn.metrics import precision_score, recall_score, accuracy_score
 from torch.utils.data import DataLoader, TensorDataset
 
 
-class Embedding_MLP(nn.Module):
+class Embbeding_CNN(nn.Module):
     """
-    初始化Embedding_MLP类。
+    初始化Embbeding_CNN类。
 
     参数:
     - total_user_features: 用户特征总数。
@@ -23,7 +23,7 @@ class Embedding_MLP(nn.Module):
     该构造函数初始化了用户和商品的特征嵌入，并构建了MLP层。
     """
     def __init__(self, total_user_features, total_item_features, n_user_features, n_item_features, dim=128):
-        super(Embedding_MLP,self).__init__()
+        super(Embbeding_CNN,self).__init__()
         # 初始化用户特征嵌入，每个用户特征嵌入到dim维空间，确保嵌入向量的最大范数为1
         self.user_features = nn.Embedding(total_user_features, dim,max_norm=1)
         # 初始化商品特征嵌入，每个商品特征嵌入到dim维空间，确保嵌入向量的最大范数为1，并设置填充索引为0。
@@ -32,10 +32,11 @@ class Embedding_MLP(nn.Module):
         # 计算总特征数，包括用户特征和商品特征。
         total_features = n_user_features + n_item_features
 
+        self.Conv = nn.Conv1d(in_channels = total_features, out_channels = 1, kernel_size = 3)
+
         # 初始化全连接层
-        self.dense1 = self.dense_layer(dim * total_features, dim * total_features // 2)
-        self.dense2 = self.dense_layer(dim * total_features // 2, dim)
-        self.dense3 = self.dense_layer(dim, 1)
+        self.dense1 = self.dense_layer(dim - 2, dim // 2)
+        self.dense2 = self.dense_layer(dim // 2, 1)
         self.sigmoid = nn.Sigmoid()
 
     def dense_layer(self,in_features, out_features):
@@ -52,10 +53,11 @@ class Embedding_MLP(nn.Module):
 
         ui = torch.cat([user_embs, item_embs], dim=1)
 
-        ui = ui.reshape(ui.shape[0], -1)
+        ui = self.Conv(ui)
+        ui = ui.squeeze(1)
+
         ui = self.dense1(ui)
         ui = self.dense2(ui)
-        ui = self.dense3(ui)
 
         ui = F.dropout(ui, training = self.training)
         logit = self.sigmoid(ui)
@@ -88,14 +90,14 @@ def load_data(rate_thr=3):
 
 
 def initialize_model(total_user_features, total_item_features, n_user_features, n_item_features, n_factors):
-    """初始化 Embedding_MLP 模型"""
-    return Embedding_MLP(total_user_features, total_item_features, n_user_features, n_item_features, n_factors)
+    """初始化 Embbeding_CNN 模型"""
+    return Embbeding_CNN(total_user_features, total_item_features, n_user_features, n_item_features, n_factors)
 
 
 def train_model(model, train_set, batch_size=1024, epochs=20, lr=0.01, wd=5e-3):
     (user_features_train, item_features_train), y_train = train_set
 
-    """训练 Embedding_MLP 模型"""
+    """训练 Embbeding_CNN 模型"""
     # 定义优化器和损失函数
     optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=wd)
     criterion = nn.BCELoss()
@@ -137,7 +139,7 @@ def evaluate_model(model, test_set, threshold=0.5):
     评估 Embbeding_MLP 模型的性能，计算 precision, recall 和 accuracy。
 
     参数:
-    - model: 训练好的 Embedding_MLP 模型
+    - model: 训练好的 Embbeding_MLP 模型
     - test_set: 测试集，包含特征和标签
     - threshold: 阈值，用于将预测分数转化为二分类标签
 
