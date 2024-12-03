@@ -37,22 +37,19 @@ RecStudy/
 This chapter introduces foundational algorithms and techniques for recommender systems, including matrix factorization, collaborative filtering, and similarity-based methods.
 
 | File                                                         | Description                                                  |
-| ------------------------------------------------------------ | ------------------------------------------------------------ |
-| [`ALS_PyTorch.py`](Part1.BasicRecAlgorithms/ALS_PyTorch.py)         | Alternating Least Squares (ALS) implemented in PyTorch.      |
-| [`ALS_tradition.py`](Part1.BasicRecAlgorithms/ALS_tradition.py)     | ALS implemented in NumPy.                                    |
-| [`basicSim.py`](Part1.BasicRecAlgorithms/basicSim.py)               | Basic similarity computation for user-item pairs.            |
-| [`dataloader.py`](Part1.BasicRecAlgorithms/dataloader.py)           | General data loader for recommender systems.                 |
-| [`dataloader4ml100kIndexs.py`](Part1.BasicRecAlgorithms/dataloader4ml100kIndexs.py) | Data loader for MovieLens 100K with indexed features.        |
-| [`dataloader4ml100kOneHot.py`](Part1.BasicRecAlgorithms/dataloader4ml100kOneHot.py) | Data loader for MovieLens 100K with one-hot encoding.        |
-| [`evaluate.py`](Part1.BasicRecAlgorithms/evaluate.py)               | Evaluation metrics for recommender systems.                  |
-| [`FM.py`](Part1.BasicRecAlgorithms/FM.py)                           | Factorization Machines (FM) implementation.                  |
+| :----------------------------------------------------------- | ------------------------------------------------------------ |
+| [`ALS_PyTorch.py`](Part1.BasicRecAlgorithms/ALS_PyTorch.py)  | Alternating Least Squares (ALS) implemented in PyTorch.      |
+| [`ALS_tradition.py`](Part1.BasicRecAlgorithms/ALS_tradition.py) | ALS implemented in NumPy.                                    |
+| [`basicSim.py`](Part1.BasicRecAlgorithms/basicSim.py)        | Basic similarity computation for user-item pairs.            |
+| [`evaluate.py`](Part1.BasicRecAlgorithms/evaluate.py)        | Evaluation metrics for recommender systems.                  |
+| [`FM.py`](Part1.BasicRecAlgorithms/FM.py)                    | Factorization Machines (FM) implementation.                  |
 | [`FM_embbeding_style.py`](Part1.BasicRecAlgorithms/FM_embbeding_style.py) | FM with embedding style implementation.                      |
-| [`furtherSim.py`](Part1.BasicRecAlgorithms/furtherSim.py)           | Extensions of similarity computation.                        |
-| [`itemCF_01label.py`](Part1.BasicRecAlgorithms/itemCF_01label.py)   | Item-based collaborative filtering with binary labels.       |
-| [`LR.py`](Part1.BasicRecAlgorithms/LR.py)                           | Logistic Regression-based recommendation.                    |
-| [`POLY2.py`](Part1.BasicRecAlgorithms/POLY2.py)                     | Polynomial-based recommendation model.                       |
-| [`SVD.ipynb`](Part1.BasicRecAlgorithms/SVD.ipynb)                   | Singular Value Decomposition (SVD) for recommendations.      |
-| [`userCF_01label.py`](Part1.BasicRecAlgorithms/userCF_01label.py)   | User-based collaborative filtering with binary labels.       |
+| [`furtherSim.py`](Part1.BasicRecAlgorithms/furtherSim.py)    | Extensions of similarity computation.                        |
+| [`itemCF_01label.py`](Part1.BasicRecAlgorithms/itemCF_01label.py) | Item-based collaborative filtering with binary labels.       |
+| [`LR.py`](Part1.BasicRecAlgorithms/LR.py)                    | Logistic Regression-based recommendation.                    |
+| [`POLY2.py`](Part1.BasicRecAlgorithms/POLY2.py)              | Polynomial-based recommendation model.                       |
+| [`SVD.ipynb`](Part1.BasicRecAlgorithms/SVD.ipynb)            | Singular Value Decomposition (SVD) for recommendations.      |
+| [`userCF_01label.py`](Part1.BasicRecAlgorithms/userCF_01label.py) | User-based collaborative filtering with binary labels.       |
 | [`userItemCF_15label.ipynb`](Part1.BasicRecAlgorithms/userItemCF_15label.ipynb) | Hybrid user-item collaborative filtering with detailed labels. |
 
 
@@ -62,14 +59,14 @@ This chapter introduces foundational algorithms and techniques for recommender s
 
 This chapter explores deep learning-based approaches, such as neural collaborative filtering, embedding methods, and sequence-based models.
 
-| File                  | Description                                           |
-| --------------------- | ----------------------------------------------------- |
-| [`ALS_MLP.ipynb`](Part2.AdvancedRecAlgorithms/ALS_MLP.ipynb)       | Neural Collaborative Filtering (NCF) with MLP.        |
-| [`Embedding_CNN.ipynb`](Part2.AdvancedRecAlgorithms/Embedding_CNN.ipynb)  | Embedding-based recommendation using CNNs.            |
-| [`Embedding_MLP.ipynb`](Part2.AdvancedRecAlgorithms/Embedding_MLP.ipynb)  | Embedding-based recommendation using MLP.             |
-| [`FNN_plus.ipynb`](Part2.AdvancedRecAlgorithms/FNN_plus.ipynb)       | Feedforward Neural Networks with additional features. |
-| [`RNN_rec.ipynb`](Part2.AdvancedRecAlgorithms/RNN_rec.ipynb)        | Sequential recommendation using RNNs.                 |
-| [`RNN_rec_ALS.ipynb`](Part2.AdvancedRecAlgorithms/RNN_rec_ALS.ipynb)    | Combining RNNs with ALS for hybrid recommendations.   |
+| File                                                         | Description                                           |
+| ------------------------------------------------------------ | ----------------------------------------------------- |
+| [`ALS_MLP.ipynb`](Part2.AdvancedRecAlgorithms/ALS_MLP.ipynb) | Neural Collaborative Filtering (NCF) with MLP.        |
+| [`Embedding_CNN.ipynb`](Part2.AdvancedRecAlgorithms/Embedding_CNN.ipynb) | Embedding-based recommendation using CNNs.            |
+| [`Embedding_MLP.ipynb`](Part2.AdvancedRecAlgorithms/Embedding_MLP.ipynb) | Embedding-based recommendation using MLP.             |
+| [`FNN_plus.ipynb`](Part2.AdvancedRecAlgorithms/FNN_plus.ipynb) | Feedforward Neural Networks with additional features. |
+| [`RNN_rec.ipynb`](Part2.AdvancedRecAlgorithms/RNN_rec.ipynb) | Sequential recommendation using RNNs.                 |
+| [`RNN_rec_ALS.ipynb`](Part2.AdvancedRecAlgorithms/RNN_rec_ALS.ipynb) | Combining RNNs with ALS for hybrid recommendations.   |
 
 ------
 
@@ -118,8 +115,11 @@ The project uses several datasets, primarily the [**MovieLens**](https://files.g
 ## Utilities
 
 Additional scripts and helper functions are stored in the `utils/` directory. These include data preprocessing and utility scripts to facilitate the project.
-| File                  | Description                                           |
-| --------------------- | ----------------------------------------------------- |
+| File                                                         | Description                                           |
+| ------------------------------------------------------------ | ----------------------------------------------------- |
+| [`dataloader.py`](utils/dataloader.py)                       | General data loader for recommender systems.          |
+| [`dataloader4ml100kIndexs.py`](utils/dataloader4ml100kIndexs.py) | Data loader for MovieLens 100K with indexed features. |
+| [`dataloader4ml100kOneHot.py`](utils/dataloader4ml100kOneHot.py) | Data loader for MovieLens 100K with one-hot encoding. |
 ------
 
 ## Getting Started
