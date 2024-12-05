@@ -1,6 +1,9 @@
 import pandas as pd
 import numpy as np
 
+# 设置评分阈值
+rate_thr = 3
+
 # 读取数据文件
 ratings_df = pd.read_csv('./dataset/ml-latest-small/ratings.csv')
 
@@ -25,8 +28,8 @@ for user_id, group in ratings_df.groupby('userId'):
         # 获取最近5个电影ID（前5个）
         current_movie = movie_ids[i]
         
-        # 判断用户是否点击该电影（评分大于等于4为点击）
-        label = 1 if ratings[i] >= 4 else 0
+        # 判断用户是否点击该电影（评分大于rate_thr为点击）
+        label = 1 if ratings[i] > rate_thr else 0
         # 如果sequence中已经有5个历史物品ID，准备生成序列
         if len(sequence) == 5:
             # 生成序列，将当前电影和评分（标签）加入
